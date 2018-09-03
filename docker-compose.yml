@@ -1,0 +1,34 @@
+version: "3"
+services:
+  octane:
+    depends_on:
+    - octane_oracle
+    - octane_es
+    ports:
+    - 8080:8080
+    - 5701
+    volumes:
+      - /opt/octane/conf:/opt/octane/conf
+      - /opt/octane/log:/opt/octane/log
+      - /opt/octane/repo:/opt/octane/repo
+    environment:
+      DISABLE_VALIDATOR_MEMORY: 'true'
+      NGA_HEAP_SIZE: '1024'
+    env_file:
+      octane.env
+    image: lifecyclemanagement/octane
+  octane_oracle:
+    image: sath89/oracle-xe-11g
+    ports:
+    - 1521
+    volumes:
+      - /opt/oracledata:/u01/app/oracle
+  octane_es:
+    environment:
+      ES_HEAP_SIZE: 1G
+    image: elasticsearch:2.4
+    ports:
+    - 9300
+    - 9200
+    volumes:
+      - /opt/esdata:/usr/share/elasticsearch/data
